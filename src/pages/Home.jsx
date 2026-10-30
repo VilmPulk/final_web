@@ -31,11 +31,11 @@ function Home() {
           </div>
 
           <div className="col-md-4">
-            <div className="feature-card">
+            <Link to="/reviews" className="feature-card feature-card-link">
               <span className="feature-icon">⭐</span>
               <h3>Arvostele</h3>
               <p>Arvostele suosikkikirjasi ja jaa mielipiteesi.</p>
-            </div>
+            </Link>
           </div>
 
           <div className="col-md-4">
