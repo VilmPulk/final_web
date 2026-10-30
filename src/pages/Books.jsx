@@ -1,6 +1,20 @@
 import { useState } from 'react';
 import BookCard from '../components/BookCard';
 import { searchBooks } from '../services/bookApi';
+import { getReviews } from '../services/reviewStorage';
+
+function loadReviewData() {
+  try {
+    return { reviews: getReviews(), error: '' };
+  } catch (error) {
+    return {
+      reviews: [],
+      error: error instanceof Error
+        ? error.message
+        : 'Yhteisön arvostelujen lataaminen epäonnistui.',
+    };
+  }
+}
 
 function Books() {
   const [query, setQuery] = useState('');
@@ -8,6 +22,7 @@ function Books() {
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [reviewData] = useState(loadReviewData);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -37,42 +52,46 @@ function Books() {
   }
 
   return (
-    <section>
-      <h1>Kirjat</h1>
-      <form className="row g-2 justify-content-center mb-4" onSubmit={handleSubmit}>
-        <div className="col-12 col-md-8">
+    <section className="books-page">
+      <header className="books-header">
+        <span className="books-eyebrow">LÖYDÄ SEURAAVA LUKUELÄMYS</span>
+        <h1>Etsi kirjoja</h1>
+        <p>Hae kirjoja nimen tai kirjailijan perusteella.</p>
+        <form className="books-search-form" onSubmit={handleSubmit}>
           <label className="visually-hidden" htmlFor="book-search">
-            Hae kirjoja
+            Etsi kirjan nimellä tai kirjailijalla
           </label>
           <input
             id="book-search"
-            className="form-control"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Hae kirjan nimellä tai tekijällä"
+            placeholder="Kirjan nimi tai kirjailija"
             required
           />
-        </div>
-        <div className="col-auto">
-          <button className="btn btn-primary" type="submit" disabled={isLoading}>
-            {isLoading ? 'Haetaan…' : 'Hae'}
+          <button type="submit" disabled={isLoading}>
+            {isLoading ? 'Haetaan…' : 'Etsi kirjoja'}
           </button>
-        </div>
-      </form>
+        </form>
+      </header>
 
-      {isLoading && <p role="status">Haetaan kirjoja…</p>}
-      {error && <p className="text-danger" role="alert">{error}</p>}
-      {!isLoading && !error && hasSearched && books.length === 0 && (
-        <p>Kirjoja ei löytynyt.</p>
-      )}
+      <div className="books-feedback">
+        {isLoading && <p role="status">Haetaan kirjoja…</p>}
+        {error && <p className="books-error" role="alert">{error}</p>}
+        {!isLoading && !error && hasSearched && books.length === 0 && (
+          <p>Kirjoja ei löytynyt. Kokeile toista hakusanaa.</p>
+        )}
+      </div>
 
       {books.length > 0 && (
-        <div className="row g-4 text-start">
+        <div className="books-results">
           {books.map((book) => (
-            <div className="col-12 col-sm-6 col-lg-4" key={book.key}>
-              <BookCard book={book} />
-            </div>
+            <BookCard
+              key={book.key}
+              book={book}
+              reviews={reviewData.reviews}
+              reviewsError={reviewData.error}
+            />
           ))}
         </div>
       )}
