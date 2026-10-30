@@ -2,16 +2,18 @@ import { useState } from 'react';
 import BookCard from '../components/BookCard';
 import { searchBooks } from '../services/bookApi';
 import { getReviews } from '../services/reviewStorage';
+import { getBookId, getSavedBooks, removeSavedBook, saveBook } from '../services/savedBooks';
 
-function loadReviewData() {
+function loadPageData() {
   try {
-    return { reviews: getReviews(), error: '' };
+    return { reviews: getReviews(), savedBooks: getSavedBooks(), error: '' };
   } catch (error) {
     return {
       reviews: [],
+      savedBooks: [],
       error: error instanceof Error
         ? error.message
-        : 'Yhteisön arvostelujen lataaminen epäonnistui.',
+        : 'Tallennustietojen lataaminen epäonnistui.',
     };
   }
 }
@@ -22,7 +24,26 @@ function Books() {
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [reviewData] = useState(loadReviewData);
+  const [pageData, setPageData] = useState(loadPageData);
+
+  function handleToggleSaved(book) {
+    try {
+      const isSaved = pageData.savedBooks.some(
+        (savedBook) => getBookId(savedBook) === getBookId(book),
+      );
+      const savedBooks = isSaved
+        ? removeSavedBook(book)
+        : saveBook(book);
+      setPageData((currentData) => ({ ...currentData, savedBooks, error: '' }));
+    } catch (saveError) {
+      setPageData((currentData) => ({
+        ...currentData,
+        error: saveError instanceof Error
+          ? saveError.message
+          : 'Kirjan tallentaminen epäonnistui.',
+      }));
+    }
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -78,6 +99,7 @@ function Books() {
       <div className="books-feedback">
         {isLoading && <p role="status">Haetaan kirjoja…</p>}
         {error && <p className="books-error" role="alert">{error}</p>}
+        {pageData.error && <p className="books-error" role="alert">{pageData.error}</p>}
         {!isLoading && !error && hasSearched && books.length === 0 && (
           <p>Kirjoja ei löytynyt. Kokeile toista hakusanaa.</p>
         )}
@@ -89,8 +111,12 @@ function Books() {
             <BookCard
               key={book.key}
               book={book}
-              reviews={reviewData.reviews}
-              reviewsError={reviewData.error}
+              reviews={pageData.reviews}
+              reviewsError={pageData.error}
+              isSaved={pageData.savedBooks.some(
+                (savedBook) => getBookId(savedBook) === getBookId(book),
+              )}
+              onToggleSaved={handleToggleSaved}
             />
           ))}
         </div>

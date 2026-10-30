@@ -443,6 +443,31 @@ body {
   color: #9c5361;
 }
 
+.save-book-button {
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px 14px;
+  border: 1px solid #791f3a;
+  border-radius: 30px;
+  background: #fffdf9;
+  color: #791f3a;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.save-book-button:hover,
+.save-book-button.is-saved {
+  background: #791f3a;
+  color: #fff;
+}
+
+.save-book-button:focus-visible {
+  outline: 3px solid rgba(156, 83, 97, 0.35);
+  outline-offset: 3px;
+}
+
 .book-community-reviews {
   margin-top: 18px;
   padding-top: 16px;
@@ -498,6 +523,57 @@ body {
   font-size: 0.9rem;
   line-height: 1.6;
   overflow-wrap: anywhere;
+}
+
+.saved-page {
+  padding: 48px 0 64px;
+  color: #30201f;
+}
+
+.saved-header {
+  max-width: 700px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.saved-header h1 {
+  margin: 0 0 12px;
+  color: #4a2929;
+  font-family: Georgia, serif;
+  font-size: clamp(2.5rem, 5vw, 3.75rem);
+  letter-spacing: normal;
+}
+
+.saved-header p,
+.saved-empty p {
+  color: #766765;
+  line-height: 1.7;
+}
+
+.saved-error {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.saved-empty {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 44px 24px;
+  border: 1px solid #eee2dc;
+  border-radius: 18px;
+  background: #fffdf9;
+  box-shadow: 0 8px 24px rgba(66, 35, 35, 0.06);
+  text-align: center;
+}
+
+.saved-empty h2 {
+  margin: 0 0 8px;
+  color: #4a2929;
+  font-family: Georgia, serif;
+}
+
+.saved-empty .main-button {
+  margin-top: 22px;
 }
 
 .reviews-page {
@@ -811,6 +887,10 @@ body {
   }
 
   .reviews-page {
+    padding-top: 28px;
+  }
+
+  .saved-page {
     padding-top: 28px;
   }
 

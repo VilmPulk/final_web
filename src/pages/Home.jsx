@@ -39,11 +39,11 @@ function Home() {
           </div>
 
           <div className="col-md-4">
-            <div className="feature-card">
+            <Link to="/saved" className="feature-card feature-card-link">
               <span className="feature-icon">♡</span>
               <h3>Tallenna suosikit</h3>
               <p>Tallenna kirjoja, jotka haluat lukea.</p>
-            </div>
+            </Link>
           </div>
         </div>
       </section>

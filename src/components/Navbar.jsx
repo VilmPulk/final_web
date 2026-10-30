@@ -10,6 +10,9 @@ function Navbar() {
         <NavLink className="nav-link" to="/books">
           Haku
         </NavLink>
+        <NavLink className="nav-link" to="/saved">
+          Tallennetut
+        </NavLink>
         <NavLink className="nav-link" to="/reviews">
           Arvostelut
         </NavLink>

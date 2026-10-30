@@ -1,7 +1,13 @@
 import { getBookCoverUrl } from '../services/bookApi';
 import { getReviewsForBook } from '../services/reviewStorage';
 
-function BookCard({ book, reviews = [], reviewsError = '' }) {
+function BookCard({
+  book,
+  reviews = [],
+  reviewsError = '',
+  isSaved = false,
+  onToggleSaved,
+}) {
   const coverUrl = getBookCoverUrl(book);
   const authors = book.author_name?.join(', ') || 'Tekijää ei ilmoitettu';
   const bookReviews = getReviewsForBook(book.title, reviews);
@@ -28,6 +34,16 @@ function BookCard({ book, reviews = [], reviewsError = '' }) {
               Julkaisuvuosi: {book.first_publish_year}
             </small>
           </p>
+        )}
+        {onToggleSaved && (
+          <button
+            className={`save-book-button${isSaved ? ' is-saved' : ''}`}
+            type="button"
+            aria-pressed={isSaved}
+            onClick={() => onToggleSaved(book)}
+          >
+            {isSaved ? '♥ Tallennettu' : '♡ Tallenna'}
+          </button>
         )}
         <section className="book-community-reviews" aria-label={`Yhteisön arvostelut: ${book.title}`}>
           <h3>Yhteisön arvostelut</h3>
