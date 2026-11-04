@@ -1,9 +1,12 @@
+// Käyttöön tarvittavat komponentit
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Books from './pages/Books';
 import Reviews from './pages/Reviews';
 import SavedBooks from './pages/SavedBooks';
-import Navbar from './components/Navbar';
+import Navbar from './components/navbar';
+
+//Sovelluksen pääkomponentti, joka sisältää navigaation ja reitityksen
 
 function App() {
   return (

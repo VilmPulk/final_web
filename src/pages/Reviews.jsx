@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { getReviews, saveReview } from '../services/reviewStorage';
 
+// Lataa aiemmin tallennetut arvostelut ja palauttaa virheen sivun näytettäväksi
 function loadReviewData() {
   try {
     return { reviews: getReviews(), error: '' };
@@ -15,22 +16,27 @@ function loadReviewData() {
 }
 
 function Reviews() {
+  // Lomakekenttien arvot ja valittu tähtiarvosana pidetään React-tilassa
   const [bookTitle, setBookTitle] = useState('');
   const [reviewerName, setReviewerName] = useState('');
   const [reviewText, setReviewText] = useState('');
   const [rating, setRating] = useState(5);
+  // Arvostelut alustetaan selaimen tallennustilasta ja lomakevirhe on erillinen
   const [reviewData, setReviewData] = useState(loadReviewData);
   const [formError, setFormError] = useState('');
   const { reviews } = reviewData;
 
+  // Tarkistaa lomakkeen, tallentaa uuden arvostelun ja tyhjentää kentät onnistumisen jälkeen
   function handleSubmit(event) {
     event.preventDefault();
 
+    // Estetään tyhjien tai pelkistä välilyönneistä koostuvien tietojen julkaisu
     if (!bookTitle.trim() || !reviewerName.trim() || !reviewText.trim()) {
       setFormError('Täytä kaikki kentät ennen arvostelun julkaisemista.');
       return;
     }
 
+    // Muodostetaan arvostelutietue siistityistä kenttäarvoista ja tämänhetkisestä päivämäärästä
     const review = {
       id: `${Date.now()}-${reviews.length}`,
       bookTitle: bookTitle.trim(),
@@ -44,6 +50,7 @@ function Reviews() {
       }),
     };
 
+    // Tallennetaan arvostelu ja virheen sattuessa näytetään tallennuspalvelun virheviesti
     try {
       setReviewData({ reviews: saveReview(review), error: '' });
     } catch (error) {
@@ -55,6 +62,7 @@ function Reviews() {
       return;
     }
 
+    // Tyhjennetään onnistuneesti julkaistun arvostelun lomake ja palautetaan oletusarvosana
     setFormError('');
     setBookTitle('');
     setReviewerName('');
@@ -64,6 +72,7 @@ function Reviews() {
 
   return (
     <section className="reviews-page">
+      {/* Sivun esittely */}
       <header className="reviews-header">
         <span className="reviews-eyebrow">LUKIJOIDEN SUOSITUKSET</span>
         <h1>Kirja-arvostelut</h1>
@@ -74,11 +83,11 @@ function Reviews() {
       </header>
 
       <div className="reviews-layout">
+        {/* Arvostelulomakkeella annetaan kirjan tiedot, arvosana ja arvio */}
         <section className="review-form-card" aria-labelledby="review-form-title">
           <h2 id="review-form-title">Kirjoita arvostelu</h2>
-          <p className="review-form-intro">Minkä kirjan luit viimeksi?</p>
-
-          <form className="review-form" onSubmit={handleSubmit}>
+       <form className="review-form" onSubmit={handleSubmit}>
+            {/* Tallennettujen arvostelujen latausvirhe näytetään lomakkeessa */}
             {reviewData.error && (
               <p className="review-form-error" role="alert">{reviewData.error}</p>
             )}
@@ -88,7 +97,6 @@ function Reviews() {
               type="text"
               value={bookTitle}
               onChange={(event) => setBookTitle(event.target.value)}
-              placeholder="Esim. Pieni elämä"
               maxLength={120}
               required
             />
@@ -99,11 +107,11 @@ function Reviews() {
               type="text"
               value={reviewerName}
               onChange={(event) => setReviewerName(event.target.value)}
-              placeholder="Etunimi tai nimimerkki"
               maxLength={60}
               required
             />
 
+            {/* Tähtipainikkeilla valitaan arvosana */}
             <fieldset className="review-rating">
               <legend>Arvosana</legend>
               <div className="review-rating-options">
@@ -128,12 +136,12 @@ function Reviews() {
               id="review-text"
               value={reviewText}
               onChange={(event) => setReviewText(event.target.value)}
-              placeholder="Mikä kirjassa jäi mieleen?"
               rows={5}
               maxLength={1000}
               required
             />
 
+            {/* Lomakevirhe ilmoitetaan käyttäjälle ja julkaisu estyy latausvirheen aikana*/}
             {formError && <p className="review-form-error" role="alert">{formError}</p>}
 
             <button className="review-submit" type="submit" disabled={Boolean(reviewData.error)}>
@@ -142,25 +150,27 @@ function Reviews() {
           </form>
         </section>
 
+        {/* Arvostelulista näyttää arvostelujen määrän, tyhjän tilan tai arvostelukortit*/}
         <section className="review-list" aria-labelledby="review-list-title">
           <div className="review-list-heading">
             <div>
               <span className="reviews-eyebrow">YHTEISÖN LUKUVINKIT</span>
-              <h2 id="review-list-title">Tuoreimmat arvostelut</h2>
+              <h2 id="review-list-title">Uusimmat arvostelut</h2>
             </div>
             <span className="review-count">{reviews.length}</span>
           </div>
 
+          {/* Jos arvosteluja ei ole, kehotetaan julkaisemaan */}
           {reviews.length === 0 ? (
             <div className="reviews-empty">
               <span className="reviews-empty-icon" aria-hidden="true">✦</span>
               <h3>Ensimmäinen arvostelu odottaa</h3>
               <p>
-                Jaa lukukokemuksesi – arvostelusi ilmestyy tähän heti
-                julkaisemisen jälkeen.
+                Jaa lukukokemuksesi – arvostelusi ilmestyy tähän julkaisemisen jälkeen.
               </p>
             </div>
           ) : (
+            // Muussa tapauksessa jokainen arvostelu näytetään omana korttinaan
             <div className="review-cards">
               {reviews.map((review) => (
                 <article className="review-card" key={review.id}>
@@ -193,4 +203,5 @@ function Reviews() {
   );
 }
 
+// Sivun komponenttia käytetään arvostelujen reitillä
 export default Reviews;

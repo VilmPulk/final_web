@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 
+// Navigaatiopalkki, joka sisältää linkit sovelluksen eri sivuille
 function Navbar() {
   return (
     <nav className="navbar navbar-expand navbar-light bg-light px-3">
