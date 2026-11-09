@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import Books from './pages/Books';
 import Reviews from './pages/Reviews';
 import SavedBooks from './pages/SavedBooks';
-import Navbar from './components/navbar';
+import Navbar from './components/Navbar.jsx';
 
 //Sovelluksen pääkomponentti, joka sisältää navigaation ja reitityksen
 
